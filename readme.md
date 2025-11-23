@@ -4,7 +4,7 @@ Tento jednoduchy skript v Pythonu slouzi k rychle a soubezne kontrole dostupnost
 
 ## Jak to funguje
 
-Program nacte seznam URL adres ze souboru `urls.txt` a pomoci nekolika vlaken (pracovniku) soucasne overi stav kazde stranky. Je to rychleji...
+Program nacte seznam URL adres ze souboru `urls.txt` a pomoci nekolika vlaken (pracovniku) soucasne overi stav kazde stranky. Je to rychlejsi...
 
 ## Jak pouzit
 
