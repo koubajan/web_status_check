@@ -4,27 +4,25 @@ import requests
 import time
 
 # Config
-# Seznam webovych stranek ke kontrole
-URLS_TO_CHECK = [
-    "https://www.google.com",
-    "https://www.seznam.cz",
-    "https://www.idnes.cz",
-    "https://www.bazos.cz",
-    "https://www.wikipedia.org",
-    "https://www.github.com",
-    "https://www.spsejecna.cz",
-    "https://www.apple.com",
-    "https://blablalbalsdwdapdpla.com", # Test neexistujici domeny
-    "https://httpbin.org/status/404", # Test chyby 404 Not Found
-    "https://httpbin.org/status/500", # Test chyby 500 Internal Server Error
-]
+URL_FILE = "urls.txt"  # Soubor se seznamem URL adres
 # Pocet soubezne pracujicich vlaken
-NUM_WORKER_THREADS = 8
+NUM_WORKER_THREADS = 4
 
 # Hlavicka, ktera napodobuje bezny prohlizec
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
+
+def load_urls_from_file(filename):
+    """Nacte seznam URL ze souboru, ignoruje prazdne radky."""
+    try:
+        with open(filename, 'r') as f:
+            # Odstrani prazdne znaky (jako \n) a preskoci prazdne radky
+            urls = [line.strip() for line in f if line.strip()]
+        return urls
+    except FileNotFoundError:
+        print(f"CHYBA: Soubor '{filename}' nebyl nalezen.")
+        return []
 
 def check_websites(q):
     """
@@ -49,9 +47,16 @@ def check_websites(q):
             q.task_done()
 
 if __name__ == "__main__":
+    # Nacteni URL ze souboru
+    urls_to_check = load_urls_from_file(URL_FILE)
+    
+    if not urls_to_check:
+        print("Nebyly nalezeny zadne URL ke kontrole. Program konci.")
+        exit()
+
     # Vytvoreni fronty a naplneni URL adresami
     url_queue = queue.Queue()
-    for url in URLS_TO_CHECK:
+    for url in urls_to_check:
         url_queue.put(url)
 
     start_time = time.time()

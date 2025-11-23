@@ -1,0 +1,11 @@
+https://www.google.com
+https://www.seznam.cz
+https://www.idnes.cz
+https://www.bazos.cz
+https://www.wikipedia.org
+https://www.github.com
+https://www.spsejecna.cz
+https://www.apple.com
+https://blablalbalsdwdapdpla.com
+https://httpbin.org/status/404
+https://httpbin.org/status/500"
