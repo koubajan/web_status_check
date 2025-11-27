@@ -1,24 +1,29 @@
-# Paralelni Kontrola Webu
+## Parallel Website Checker
 
-Tento jednoduchy skript v Pythonu slouzi k rychle a soubezne kontrole dostupnosti webovych stranek.
+This simple Python script is used for **quickly and concurrently checking the availability of websites**.
 
-## Jak to funguje
+-----
 
-Program nacte seznam URL adres ze souboru `urls.txt` a pomoci nekolika vlaken (pracovniku) soucasne overi stav kazde stranky. Je to rychlejsi...
+### How It Works
 
-## Jak pouzit
+The program reads a list of URLs from the file **`urls.txt`** and simultaneously verifies the status of each page using several threads (workers). This makes the process much faster...
 
-1.  **Nainstalujte potrebne knihovny:**
+-----
+
+### How to Use
+
+1.  **Install the necessary libraries:**
+
     ```bash
     pip install requests
     ```
 
-2.  **Upravte soubor `urls.txt`:**
-    Pridejte nebo odeberte webove adresy, ktere chcete kontrolovat. Kazda adresa musi byt na samostatnem radku.
+2.  **Edit the `urls.txt` file:** Add or remove the web addresses you want to check. Each address must be on a **separate line**.
 
-3.  **Spustte skript:**
+3.  **Run the script:**
+
     ```bash
     python main.py
     ```
 
-Vystup se zobrazi primo v terminalu a ukaze stavovy kod pro kazdou URL (napr. 200 pro uspech) nebo chybu, pokud stranka neni dostupna.
+The output will be displayed directly in the terminal, showing the **status code** for each URL (e.g., **200 for success**) or an **error** if the page is unavailable.
