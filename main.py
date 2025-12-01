@@ -17,16 +17,16 @@ def load_urls_from_file(filename):
     """Nacte seznam URL ze souboru, ignoruje prazdne radky."""
     try:
         with open(filename, 'r') as f:
-            # Odstrani prazdne znaky (jako \n) a preskoci prazdne radky
+            # Odstrani prazdne znaky a preskoci prazdne radky
             urls = [line.strip() for line in f if line.strip()]
         return urls
     except FileNotFoundError:
-        print(f"CHYBA: Soubor '{filename}' nebyl nalezen.")
+        print(f"Soubor '{filename}' nebyl nalezen.")
         return []
 
 def check_websites(q):
     """
-    Pracovnik, ktery bere URL z fronty a kontroluje jejich stav.
+    Bere URL z fronty a kontroluje jejich stav.
     """
     while not q.empty():
         try:
@@ -36,12 +36,12 @@ def check_websites(q):
             break
 
         try:
-            # Provedeme HTTP pozadavek s hlavickou a casovym limitem 5 sekund
+            # HTTP pozadavek s hlavickou a casovym limitem 5 sekund
             response = requests.get(url, headers=HEADERS, timeout=5)
-            print(f"{url:<40} -> Stav: {response.status_code}")
+            print(f"{url} - Stav: {response.status_code}")
         except requests.exceptions.RequestException as e:
             # Zpracovani chyb (napr. neexistujici domena, timeout)
-            print(f"{url:<40} -> CHYBA: {e.__class__.__name__}")
+            print(f"{url} - Error: {e.__class__.__name__}")
         finally:
             # Oznacime ukol jako hotovy
             q.task_done()
