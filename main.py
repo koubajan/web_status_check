@@ -1,58 +1,25 @@
 import threading
 import queue
-import requests
 import time
+from utils import load_config, load_urls_from_file
+from worker import check_website
 
-# Config
-URL_FILE = "urls.txt"  # Soubor se seznamem URL adres
-# Pocet soubezne pracujicich vlaken
-NUM_WORKER_THREADS = 4
-
-# Hlavicka, ktera napodobuje bezny prohlizec
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-}
-
-def load_urls_from_file(filename):
-    """Nacte seznam URL ze souboru, ignoruje prazdne radky."""
-    try:
-        with open(filename, 'r') as f:
-            # Odstrani prazdne znaky a preskoci prazdne radky
-            urls = [line.strip() for line in f if line.strip()]
-        return urls
-    except FileNotFoundError:
-        print(f"Soubor '{filename}' nebyl nalezen.")
-        return []
-
-def check_websites(q):
+def main():
     """
-    Bere URL z fronty a kontroluje jejich stav.
+    Hlavni funkce pro spusteni paralelni kontroly webu.
     """
-    while not q.empty():
-        try:
-            url = q.get_nowait()
-        except queue.Empty:
-            # Fronta je prazdna, vlakno konci
-            break
+    # Nacteni konfigurace
+    config = load_config()
+    if not config:
+        return
 
-        try:
-            # HTTP pozadavek s hlavickou a casovym limitem 5 sekund
-            response = requests.get(url, headers=HEADERS, timeout=5)
-            print(f"{url} - Stav: {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            # Zpracovani chyb (napr. neexistujici domena, timeout)
-            print(f"{url} - Error: {e.__class__.__name__}")
-        finally:
-            # Oznacime ukol jako hotovy
-            q.task_done()
-
-if __name__ == "__main__":
-    # Nacteni URL ze souboru
-    urls_to_check = load_urls_from_file(URL_FILE)
-    
+    # Nacteni URL ze souboru specifikovaneho v konfiguraci
+    urls_to_check = load_urls_from_file(config["url_file"])
     if not urls_to_check:
         print("Nebyly nalezeny zadne URL ke kontrole. Program konci.")
-        exit()
+        return
+
+    print(f"Spoustim paralelni kontrolu {len(urls_to_check)} webovych stranek...\n")
 
     # Vytvoreni fronty a naplneni URL adresami
     url_queue = queue.Queue()
@@ -61,17 +28,24 @@ if __name__ == "__main__":
 
     start_time = time.time()
 
-    # Vytvoreni a spousteni vlaken
+    # --- Vytvoreni a spousteni vlaken ---
     threads = []
-    for i in range(NUM_WORKER_THREADS):
-        thread = threading.Thread(target=check_websites, args=(url_queue,))
+    for i in range(config["num_worker_threads"]):
+        thread = threading.Thread(
+            target=check_website,
+            args=(url_queue, config["headers"], config["request_timeout"])
+        )
         threads.append(thread)
         thread.start()
 
-    # Pockame, az vsechna vlakna dokonci svou praci
+    # --- Cekani na dokonceni ---
     for thread in threads:
         thread.join()
 
     end_time = time.time()
 
-    print(f"Hotovo kontola trvala {end_time - start_time:.2f} sekund.")
+    print("\n--- Hotovo ---")
+    print(f"Celkovy cas kontroly: {end_time - start_time:.2f} sekund.")
+
+if __name__ == "__main__":
+    main()
