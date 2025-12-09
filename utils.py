@@ -1,23 +1,23 @@
 import json
 
 def load_config(filename="config.json"):
-    """Nacte konfiguraci ze souboru JSON."""
+    """Loads configuration from a JSON file."""
     try:
         with open(filename, 'r') as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"CHYBA: Konfiguracni soubor '{filename}' nebyl nalezen.")
+        print(f"ERROR: Configuration file '{filename}' not found.")
         return None
     except json.JSONDecodeError:
-        print(f"CHYBA: Konfiguracni soubor '{filename}' ma neplatny format.")
+        print(f"ERROR: Configuration file '{filename}' has an invalid format.")
         return None
 
 def load_urls_from_file(filename):
-    """Nacte seznam URL ze souboru, ignoruje prazdne radky."""
+    """Loads a list of URLs from a file, ignoring empty lines."""
     try:
         with open(filename, 'r') as f:
             urls = [line.strip() for line in f if line.strip()]
         return urls
     except FileNotFoundError:
-        print(f"CHYBA: Soubor s URL '{filename}' nebyl nalezen.")
+        print(f"ERROR: URL file '{filename}' not found.")
         return []

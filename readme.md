@@ -1,29 +1,43 @@
-## Parallel Website Checker
+# Parallel Web Checker with GUI
 
-This simple Python script is used for **quickly and concurrently checking the availability of websites**.
+This project is a Python application for fast and concurrent checking of website availability. It uses multithreading to efficiently verify a large number of URL addresses at once. The application now includes a simple Graphical User Interface (GUI).
 
------
+## Features
 
-### How It Works
+*   **Parallel Processing:** Checks run in multiple threads simultaneously.
+*   **Graphical Interface:** A simple window for file selection and result display.
+*   **Configuration:** Settings for thread count and timeouts in `config.json`.
+*   **Modularity:** The code is split into logical modules.
 
-The program reads a list of URLs from the file **`urls.txt`** and simultaneously verifies the status of each page using several threads (workers). This makes the process much faster...
+## Requirements
 
------
+*   Python 3.x
+*   `requests` library
 
-### How to Use
+Install dependencies:
+```bash
+pip install requests
+```
+*(Note: The `tkinter` library for the GUI is a standard part of Python and does not need to be installed separately.)*
 
-1.  **Install the necessary libraries:**
+## How to Use
 
-    ```bash
-    pip install requests
-    ```
-
-2.  **Edit the `urls.txt` file:** Add or remove the web addresses you want to check. Each address must be on a **separate line**.
-
-3.  **Run the script:**
-
+1.  **Run the application:**
     ```bash
     python main.py
     ```
 
-The output will be displayed directly in the terminal, showing the **status code** for each URL (e.g., **200 for success**) or an **error** if the page is unavailable.
+2.  **In the application:**
+    *   Click the **"Select URL File"** button.
+    *   Select a text file (e.g., the included `urls.txt`) containing one website address per line.
+    *   Click **"Start Checking"**.
+    *   Results will be displayed in the text area within the window.
+
+## Project Structure
+
+*   `main.py`: The entry point of the application.
+*   `gui.py`: Contains the Graphical User Interface logic (Tkinter).
+*   `worker.py`: Contains the logic for checking websites (worker threads).
+*   `utils.py`: Helper functions for loading files and configuration.
+*   `config.json`: Application settings (thread count, headers, timeout).
+*   `urls.txt`: Sample file with a list of URLs.
